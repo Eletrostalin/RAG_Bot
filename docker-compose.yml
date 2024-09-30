@@ -1,0 +1,28 @@
+version: '3.8'
+
+services:
+
+  postgres:
+    image: postgres:16
+    env_file:
+      ./.env
+    volumes:
+      - ./postgres_data:/var/lib/postgresql/data
+    restart: on-failure
+    ports:
+      - "3536:5432"
+  bot:
+    build: .
+    command: python main.py
+    env_file:
+      - ./.env
+    restart: always
+    depends_on:
+      - postgres
+
+
+volumes:
+  postgres_data:
+
+networks:
+  bot-network:
