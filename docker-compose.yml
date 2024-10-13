@@ -1,28 +1,27 @@
 version: '3.8'
 
 services:
-
   postgres:
-    image: postgres:16
+    image: postgres:16  # Используем образ PostgreSQL версии 16
     env_file:
-      ./.env
+      ./.env  # Файл с переменными окружения, который используется для конфигурации
     volumes:
-      - ./postgres_data:/var/lib/postgresql/data
-    restart: on-failure
+      - ./postgres_data:/var/lib/postgresql/data  # Монтируем локальную директорию для хранения данных БД
+    restart: on-failure  # Перезапускаем контейнер, если он завершится с ошибкой
     ports:
-      - "3536:5432"
-  bot:
-    build: .
-    command: python main.py
-    env_file:
-      - ./.env
-    restart: always
-    depends_on:
-      - postgres
+      - "3536:5432"  # Пробрасываем порт 3536 на локальной машине в порт 5432 контейнера PostgreSQL
 
+  bot:
+    build: .  # Собираем образ из текущей директории
+    command: python main.py  # Команда для запуска бота
+    env_file:
+      - ./.env  # Используем файл с переменными окружения
+    restart: always  # Автоматический перезапуск контейнера в случае завершения
+    depends_on:
+      - postgres  # Указываем зависимость от контейнера PostgreSQL. Сначала должен стартовать Postgres
 
 volumes:
-  postgres_data:
+  postgres_data:  # Определяем volume для хранения данных БД
 
 networks:
-  bot-network:
+  bot-network:  # Определяем сеть для связи контейнеров
